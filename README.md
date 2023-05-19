@@ -56,12 +56,15 @@ To manage the shopping cart functionality, a dedicated store was implemented usi
 #Backend:
 
 In the backend, the project utilizes several design patterns to achieve a structured and maintainable codebase. These design patterns help separate concerns, promote code reusability, and enhance overall system flexibility. Below are the design patterns used in this project:
+
 #Repository Pattern
 
 The Repository pattern is employed to encapsulate data access logic and provide a consistent interface for interacting with the underlying data storage (in this case, a database). The CartRepository class acts as an intermediary between the application's code and the data persistence layer.
+
 #Dependency Injection
 
 The project employs the Dependency Injection pattern to manage the dependencies between classes. In the CartRepository class, the dependencies (Cart, CartItem, and RemovedItem models) are injected through the constructor.
+
 #Observer Pattern
 
 The Observer pattern is applied to the mergeCarts method in the CartRepository class. When merging two carts, the method iterates over the cart items of the old cart and performs actions based on whether corresponding cart items exist in the new cart or not.
