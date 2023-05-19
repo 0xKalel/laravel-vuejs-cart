@@ -127,26 +127,23 @@ class CartService
 
     protected function getUserId()
     {
-        // Replace with your logic to get the user ID
-        return auth()->id();
+        return auth()->id() ?? null;
     }
 
     protected function getSessionId()
     {
-        // Replace with your logic to get the session ID
         return session()->getId();
     }
 
     protected function logError(string $message)
     {
-        // Replace with your logging implementation
         logger()->error($message);
     }
 
     public function getCartItems()
     {
-        $userId = auth()->id() ?? null;
-        $sessionId = session()->getId();
+        $userId = $this->getUserId();
+        $sessionId = $this->getSessionId();
         try {
             $cart = $this->cartRepository->findCartItemsByUserIdOrSessionId($userId, $sessionId);
 
@@ -158,7 +155,7 @@ class CartService
                 return $cart->cartItems;
             });
         } catch (\Exception $e) {
-            throw new Exception('Failed to retrieve cart items');
+            return collect([]);
         }
     }
 }
