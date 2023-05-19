@@ -30,8 +30,9 @@ class CartRepository
      */
     public function findCartByUserIdOrSessionId(?int $userId, ?string $sessionId): ?Cart
     {
-        return $this->cartModel
-            ->where('user_id', $userId)
+        return $this->cartModel->when($userId !== null, function ($query) use ($userId) {
+            return $query->where('user_id', $userId);
+        })
             ->orWhere('session_id', $sessionId)
             ->first();
     }
@@ -73,7 +74,9 @@ class CartRepository
      */
     public function findCartItemsByUserIdOrSessionId(?int $userId, ?string $sessionId): ?Collection
     {
-        return $this->cartModel::where('user_id', $userId)
+        return $this->cartModel->when($userId !== null, function ($query) use ($userId) {
+            return $query->where('user_id', $userId);
+        })
             ->orWhere('session_id', $sessionId)
             ->with('cartItems.product')
             ->get();
@@ -85,7 +88,7 @@ class CartRepository
      * @param string $sessionId
      * @return Cart 
      */
-    public function createCart(string $sessionId, string $ipAddress, string $userAgent): Cart 
+    public function createCart(string $sessionId, string $ipAddress, string $userAgent): Cart
     {
 
         return $this->cartModel->create([
@@ -200,26 +203,25 @@ class CartRepository
      */
     public function mergeCarts(Cart $oldCart, Cart $newCart): void
     {
-            $oldCartItems = $oldCart->cartItems()->get();
+        $oldCartItems = $oldCart->cartItems()->get();
 
-            foreach ($oldCartItems as $oldCartItem) {
-                $newCartItem = $newCart->cartItems()->where('product_id', $oldCartItem->product_id)->first();
+        foreach ($oldCartItems as $oldCartItem) {
+            $newCartItem = $newCart->cartItems()->where('product_id', $oldCartItem->product_id)->first();
 
-                if ($newCartItem) {
-                    // Cart item already exists in the new cart, update the quantity
-                    $newCartItem->update(['quantity' => $newCartItem->quantity + $oldCartItem->quantity]);
-                } else {
-                    // Cart item doesn't exist in the new cart, create a new cart item
-                    $newCart->cartItems()->create([
-                        'product_id' => $oldCartItem->product_id,
-                        'quantity' => $oldCartItem->quantity,
-                    ]);
-                }
-
-                $oldCartItem->delete();
+            if ($newCartItem) {
+                // Cart item already exists in the new cart, update the quantity
+                $newCartItem->update(['quantity' => $newCartItem->quantity + $oldCartItem->quantity]);
+            } else {
+                // Cart item doesn't exist in the new cart, create a new cart item
+                $newCart->cartItems()->create([
+                    'product_id' => $oldCartItem->product_id,
+                    'quantity' => $oldCartItem->quantity,
+                ]);
             }
 
-            $oldCart->delete();
+            $oldCartItem->delete();
+        }
 
+        $oldCart->delete();
     }
 }
