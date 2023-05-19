@@ -70,15 +70,3 @@ The Observer pattern is applied to the mergeCarts method in the CartRepository c
 I have implemented a specific approach that utilizes a single cart table to store user-related information, including the user ID and session ID. The cart items are stored in a separate table, linked by the cart ID. This approach allows efficient tracking of user carts, even for non-logged-in users, by associating them with a session ID.
 
 While I am aware of an alternative approach that involves introducing a sessions table and a separate carts table, linked by another table, I have chosen to go with the first approach due to its simplicity and efficiency.
-
-
-
-# Technical assignment full-stack engineer
-
-You’re working on an online shopping platform. The sales team wants to know which items were added to a basket, but removed before checkout. We will use this data later for targeted discounts.
-
-Build a shopping basket that helps you get this data. You are free to use the languages, frameworks and tools you prefer.
-
-**Timing**
-
-You have 1 week to accomplish the assignment. You decide yourself how much time and effort you invest in it, but one of our colleagues tends to say: "Make sure it is good" ;-). Please send us (jobs@madewithlove.com) an email when you are ready with the assignment. Please mention your name, Github username and a link to what we need to review.
